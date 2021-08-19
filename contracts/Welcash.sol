@@ -34,11 +34,12 @@ contract Welcash is ERC20Burnable, Pausable, Ownable{
     else return false;
   }
 
-  function _beforeTokenTransfer(address from, address to, uint256 amount) internal override whenNotPaused{
+  function _beforeTokenTransfer(address from, address to, uint256 amount) internal virtual override whenNotPaused{
     require(!blocked[msg.sender], 'User is blocked');
+    super._beforeTokenTransfer(from, to, amount);
   }
 
-  function _transfer(address sender, address recipient, uint256 amount) internal override{
+  function _transfer(address sender, address recipient, uint256 amount) internal virtual override{
     if(isBurnAddress(recipient)){
       emit Burn(sender, recipient, amount);
       super.burn(amount);
@@ -53,7 +54,7 @@ contract Welcash is ERC20Burnable, Pausable, Ownable{
     return super.transferFrom(sender, recipient, amount);
   }
 
-  function _approve(address owner, address spender, uint256 amount) internal override {
+  function _approve(address owner, address spender, uint256 amount) internal virtual override {
     require(!blocked[msg.sender], 'User is blocked');
     super._approve(_msgSender(), spender, amount);
   }
@@ -69,11 +70,11 @@ contract Welcash is ERC20Burnable, Pausable, Ownable{
     super._mint(addr, amount);
   }
 
-  function burn(uint256 amount) public override{
+  function burn(uint256 amount) public virtual override{
     revert("burn method disabled");
   }
 
-  function burnFrom(address account, uint256 amount) public override onlyOwner{
+  function burnFrom(address account, uint256 amount) public virtual override onlyOwner{
     revert("burnFrom method disabled");
   }
 
