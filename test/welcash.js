@@ -55,6 +55,22 @@ contract("welcash", (accounts) => {
     await checkBalance(accounts[1], "3");
   });
 
+  it('should perform succesful transferFrom', async () => {
+    await instance.mint(accounts[0], 20);
+    await instance.approve(accounts[1], 10, {from: accounts[0]})
+    await instance.transferFrom(accounts[0], accounts[2], 3, {from: accounts[1]});
+    await checkBalance(accounts[0], "17");
+    await checkBalance(accounts[1], "0");
+    await checkBalance(accounts[2], "3");
+  });
+
+  it('should revert if transferFrom exceeds allowance', async () => {
+    await instance.mint(accounts[0], 20);
+    await instance.approve(accounts[1], 10, {from: accounts[0]})
+    await instance.transferFrom(accounts[0], accounts[2], 4, {from: accounts[1]});
+    expectRevert(instance.transferFrom(accounts[0], accounts[2], 7, {from: accounts[1]}), "ERC20: transfer amount exceeds allowance");
+  });
+
 /// BLOCKING FEATURE
 
   it('should not allow blocked user to make transfer', async () => {
@@ -120,6 +136,4 @@ contract("welcash", (accounts) => {
     await expectRevert(instance.mint(accounts[0], 20, {from: accounts[1]}), 'Ownable: caller is not the owner');
     await expectRevert(instance.blockUser(accounts[0], {from: accounts[1]}), 'Ownable: caller is not the owner');
   });
-
-
 });
