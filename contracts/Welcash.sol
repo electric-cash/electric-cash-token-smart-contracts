@@ -59,12 +59,6 @@ contract Welcash is ERC20Burnable, Pausable, Ownable{
     super._approve(owner, spender, amount);
   }
 
-//  function approve(address spender, uint256 amount) public override returns (bool) {
-//    require(!blocked[msg.sender], 'User is blocked');
-//    _approve(_msgSender(), spender, amount);
-//    return true;
-//  }
-
   function mint(address addr, uint256 amount) external onlyOwner{
     require(totalSupply() + amount < _maxSupply, "wElcash supply exceeded");
     super._mint(addr, amount);
