@@ -8,8 +8,8 @@ import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Pausable.sol";
 
 contract Welcash is ERC20Burnable, Pausable, Ownable{
 
-  uint256 immutable private _maxSupply = 21000000*1e8;
-  address immutable private _lastBurnAddress = 0x0000000000000000000000000000fFfffFFfFfff;
+  uint256 constant private MAX_SUPPLY = 21*1e6*1e8; // 21MM
+  address constant private LAST_BURN_ADDRESS = 0x0000000000000000000000000000fFfffFFfFfff;
   mapping(address => bool) public blocked;
   event Burn(address indexed from, address indexed to, uint256 value);
 
@@ -20,16 +20,16 @@ contract Welcash is ERC20Burnable, Pausable, Ownable{
     return 8;
   }
 
-  function pause() public onlyOwner{
+  function pause() external onlyOwner{
     _pause();
   }
 
-  function unpause() public onlyOwner{
+  function unpause() external onlyOwner{
     _unpause();
   }
 
   function isBurnAddress(address addr) public view returns (bool){
-    if(addr < _lastBurnAddress)
+    if(addr < LAST_BURN_ADDRESS)
       return true;
     else return false;
   }
@@ -60,7 +60,7 @@ contract Welcash is ERC20Burnable, Pausable, Ownable{
   }
 
   function mint(address addr, uint256 amount) external onlyOwner{
-    require(totalSupply() + amount < _maxSupply, "wElcash supply exceeded");
+    require(totalSupply() + amount < MAX_SUPPLY, "wElcash supply exceeded");
     super._mint(addr, amount);
   }
 

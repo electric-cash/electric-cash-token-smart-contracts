@@ -10,9 +10,10 @@
     "@openzeppelin/contracts": "^4.1.0",
     "@openzeppelin/test-helpers": "^0.5.11",
     "truffle": "^5.3.7"
-
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "solidity-coverage": "^0.7.17"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
