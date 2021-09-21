@@ -120,16 +120,6 @@ contract("welcash", (accounts) => {
     await checkBalance(accounts[2], "1");
   });
 
-  it('should revert when burn called', async () => {
-    await instance.mint(accounts[1], 3);
-    await expectRevert(instance.burn(1, {from: accounts[1]}), 'burn method disabled');
-  });
-
-  it('should revert when burnFrom called', async () => {
-    await instance.mint(accounts[1], 3);
-    await expectRevert(instance.burnFrom(accounts[1], 1, {from: accounts[0]}), 'burnFrom method disabled');
-  });
-
 /// OWNERSHIP FEATURE
 
   it('should revert onlyOwner method calls from not owner', async () => {

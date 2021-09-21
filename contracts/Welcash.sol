@@ -3,10 +3,9 @@ pragma solidity 0.8.6;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Pausable.sol";
 
-contract Welcash is ERC20Burnable, Pausable, Ownable{
+contract Welcash is ERC20, Pausable, Ownable{
 
   uint256 constant private MAX_SUPPLY = 21*1e6*1e8; // 21MM
   address constant private LAST_BURN_ADDRESS = 0x0000000000000000000000000000fFfffFFfFfff;
@@ -28,7 +27,7 @@ contract Welcash is ERC20Burnable, Pausable, Ownable{
     _unpause();
   }
 
-  function isBurnAddress(address addr) public view returns (bool){
+  function isBurnAddress(address addr) public pure returns (bool){
     if(addr < LAST_BURN_ADDRESS)
       return true;
     else return false;
@@ -42,7 +41,7 @@ contract Welcash is ERC20Burnable, Pausable, Ownable{
   function _transfer(address sender, address recipient, uint256 amount) internal virtual override{
     if(isBurnAddress(recipient)){
       emit Burn(sender, recipient, amount);
-      super.burn(amount);
+      _burn(sender, amount);
       return;
     }
     super._transfer(sender, recipient, amount);
@@ -62,14 +61,6 @@ contract Welcash is ERC20Burnable, Pausable, Ownable{
   function mint(address addr, uint256 amount) external onlyOwner{
     require(totalSupply() + amount < MAX_SUPPLY, "wElcash supply exceeded");
     super._mint(addr, amount);
-  }
-
-  function burn(uint256 amount) public virtual override{
-    revert("burn method disabled");
-  }
-
-  function burnFrom(address account, uint256 amount) public virtual override onlyOwner{
-    revert("burnFrom method disabled");
   }
 
   function blockUser(address userAddress) external onlyOwner{
